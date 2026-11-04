@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your account</h2>
+<p>Welcome, {{ user.get_full_name|default:user.username }}.</p>
+<p>Role: {{ user.get_role_display }}</p>
+{% if user.course %}<p>Course: {{ user.course }}</p>{% endif %}
+{% endblock %}
