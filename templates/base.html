@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head><title>CampusConnect</title></head>
+<head>
+  <title>CampusConnect</title>
+  <style>
+    body { margin: 0; background: #f3f5f7; color: #202a33; font: 16px system-ui, sans-serif; }
+    nav { display: flex; align-items: center; gap: 1rem; padding: 1rem max(1rem, calc((100% - 48rem) / 2)); background: #fff; border-bottom: 1px solid #d9e0e6; }
+    nav form { margin: 0; }
+    main { max-width: 44rem; margin: 2rem auto; padding: 1.5rem; background: #fff; border: 1px solid #d9e0e6; border-radius: 6px; }
+    p { line-height: 1.5; }
+    label { display: block; margin-bottom: .35rem; }
+    input { box-sizing: border-box; width: 100%; max-width: 32rem; padding: .55rem; border: 1px solid #aeb9c4; border-radius: 4px; font: inherit; }
+    button { padding: .55rem .9rem; border: 0; border-radius: 4px; background: #286b83; color: #fff; font: inherit; cursor: pointer; }
+    a { color: #175c78; }
+    .messages { padding: .75rem 1rem; background: #e8f4ec; border: 1px solid #b6d8c0; border-radius: 4px; }
+    .messages li { margin-left: 1rem; }
+    @media (max-width: 48rem) { main { margin: 1rem; padding: 1rem; } nav { flex-wrap: wrap; } }
+  </style>
+</head>
 <body>
   <nav>
   {% if user.is_authenticated %}
     Hi, {{ user.username }}!
+    <a href="{% url 'profile' %}">Profile</a>
     <form method="post" action="{% url 'logout' %}">
       {% csrf_token %}
       <button type="submit">Log out</button>
@@ -14,7 +31,16 @@
     <a href="{% url 'signup' %}">Sign up</a>
   {% endif %}
   </nav>
-  <main>{% block content %}{% endblock %}</main>
+  <main>
+    {% if messages %}
+      <ul class="messages" role="status">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
 </body>
 </html>
  

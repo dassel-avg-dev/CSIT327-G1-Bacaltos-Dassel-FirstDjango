@@ -22,9 +22,34 @@ class SignUpViewTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response.redirect_chain, [(reverse("login"), 302)])
+		self.assertContains(response, "Account created successfully. Please log in.")
 		user = CustomUser.objects.get(username="newstudent")
 		self.assertEqual(user.role, CustomUser.Role.STUDENT)
 		self.assertTrue(user.check_password("CampusConnect-password-2026!"))
+
+	def test_profile_updates_only_the_signed_in_users_editable_fields(self):
+		student = CustomUser.objects.create_user(
+			username="profileuser",
+			password="CampusConnect-password-2026!",
+		)
+		self.client.force_login(student)
+
+		response = self.client.post(
+			reverse("profile"),
+			{
+				"first_name": "Updated",
+				"last_name": "Student",
+				"email": "updated@example.com",
+				"course": "Biology",
+			},
+		)
+
+		self.assertRedirects(response, reverse("profile"))
+		student.refresh_from_db()
+		self.assertEqual(student.first_name, "Updated")
+		self.assertEqual(student.email, "updated@example.com")
+		self.assertEqual(student.course, "Biology")
+		self.assertEqual(student.role, CustomUser.Role.STUDENT)
 
 
 class AdminAccessTests(TestCase):
