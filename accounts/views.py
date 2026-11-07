@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomUserProfileForm
 from .models import CustomUser
 
 
@@ -16,7 +16,7 @@ class SignUpView(SuccessMessageMixin, CreateView):
 
 class ProfileView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    fields = ("first_name", "last_name", "email", "course")
+    form_class = CustomUserProfileForm
     template_name = "registration/profile.html"
     success_url = reverse_lazy("profile")
 
